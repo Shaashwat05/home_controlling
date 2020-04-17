@@ -5,31 +5,43 @@ from tkinter import *
 import tkinter.ttk as ttk
 import time
 
+
+screen=Tk()
+screen.geometry("300x500")
+screen.configure(bg='#525252')
+
 s=socket.socket()
-host="172.16.248.218"
+host="192.168.1.171"
 port=9999
 
 s.connect((host,port))
 
 
 
-
 def cam():
     s.send(str.encode("camera"))
 
-def temp():
+def temp(event):
     s.send(str.encode("temperature"))
+    temperature=s.recv(1024)
+    print(temperature.decode("utf-8"))
 
 
-def app(wc_msg):
+def screen_init():
+    print("hi")
     screen=Tk()
     screen.geometry("300x500")
     screen.configure(bg='#525252')
+    return screen
+
+def app(wc_msg):
+    
     #panel1.place(x=0, y=0, relwidth=1, relheight=1)
-    welcome = Message(master, text=wc_msg)
-    welcome.pack()
-    time.sleep(2)
-    screen.grid_forget()
+    #welcome = Message(screen, text=wc_msg)
+    #welcome.pack()
+    #time.sleep(2)
+    #screen.destroy()
+    #screen=screen_init()
 
     style = ttk.Style()   
     style.configure('TButton', font =('Chilanka', 12, 'bold'), foreground = 'black', background='white', relief=FLAT ) 
@@ -58,5 +70,6 @@ def app(wc_msg):
 
 while(True):
     wc_msg=s.recv(1024)
-    print(wc_msg.decode("utf-8"))
+    wc_msg=wc_msg.decode("utf-8")
+    print(wc_msg)
     app(wc_msg)
