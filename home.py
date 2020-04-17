@@ -40,12 +40,11 @@ def accept():
 
 
 def send_command(conn):
+    conn.send(str.encode(wc_msg))
     while True:
-        conn.send(str.encode(wc_msg))
         command=conn.recv(1024)
         command=command.decode("utf-8")
         if(command=='temperature'):
-            print('hi')
             temperature="50"
             conn.send(str.encode(temperature))
 
