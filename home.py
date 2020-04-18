@@ -1,6 +1,10 @@
 import socket
 import sys
 #from home_system import *
+import numpy as np
+import cv2
+from pickle import loads, dumps
+import struct
 
 wc_msg="WELCOME TO THE GABLINGS"
 
@@ -47,6 +51,21 @@ def send_command(conn):
         if(command=='temperature'):
             temperature="50"
             conn.send(str.encode(temperature))
+        if(command=='camera'):
+            cap = cv2.VideoCapture(0)
+            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+            while True:
+                ret,frame = cap.read()
+                res,frame = cv2.imencode('.jpg',frame,encode_param)
+                data = dumps(frame,0)
+                size = len(data)
+                conn.send(struct.pack(">L",size)+data)
+                #if(conn.recv(1024)):
+                #    break
+
+            # When everything done, release the capture
+            cap.release()
+
 
 
 

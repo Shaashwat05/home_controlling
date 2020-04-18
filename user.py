@@ -4,10 +4,14 @@ import subprocess
 from tkinter import *
 import tkinter.ttk as ttk
 import time
+from pickle import loads,dumps
+import cv2
+import struct
+
 
 
 s=socket.socket()
-host="192.168.1.172"
+host="192.168.1.173"
 port=9999
 
 s.connect((host,port))
@@ -16,6 +20,29 @@ s.connect((host,port))
 
 def cam(event):
     s.send(str.encode("camera"))
+    data = b""
+    rec_size = struct.calcsize(">L")
+    while True:
+        data = b""
+        rec_size = struct.calcsize(">L")
+        while(len(data)<rec_size):
+            data+=s.recv(4096)
+        print("Started receiving data")
+        inp_msg_size = data[:rec_size]
+        data = data[rec_size:]
+        msg_size = struct.unpack(">L",inp_msg_size)[0]
+        while(len(data)<msg_size):
+            data+= s.recv(4096)
+        fr_data = data[:msg_size]
+        data = data[msg_size:]
+        
+        frame = loads(fr_data,fix_imports = True,encoding = "bytes")
+        frame = cv2.imdecode(frame,cv2.IMREAD_COLOR)
+        cv2.imshow('frame',frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            #s.send(str.encode('quit'))
+            break
+    cv2.destroyAllWindows()
 
 def temp(event):
     s.send(str.encode("temperature"))
@@ -30,11 +57,9 @@ def welcome(wc_msg,start):
     welcome = Message(screen, text=wc_msg,bg='#525252', font =('Chilanka', 12, 'bold'), padx=70, pady=70 )
     welcome.place(relx=0.5, rely=0.35, anchor=CENTER)
     while True:
-    
-    #if(i<=100):
         welcome.pack_forget()
         #time.sleep(5)
-        if(int(time.time()-start)>3):
+        if(int(time.time()-start)>2):
             print("hi")
             break
         screen.update_idletasks()
