@@ -49,22 +49,31 @@ def send_command(conn):
         command=conn.recv(1024)
         command=command.decode("utf-8")
         if(command=='temperature'):
+            #temperature=check_temperature()
             temperature="50"
             conn.send(str.encode(temperature))
         if(command=='camera'):
             cap = cv2.VideoCapture(0)
             encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+            i=1
             while True:
+                print("hi",i)
+                i+=1
                 ret,frame = cap.read()
                 res,frame = cv2.imencode('.jpg',frame,encode_param)
                 data = dumps(frame,0)
                 size = len(data)
                 conn.send(struct.pack(">L",size)+data)
-                #if(conn.recv(1024)):
-                #    break
-
-            # When everything done, release the capture
+                if((conn.recv(1024).decode("utf-8"))=="quit"):
+                    break
+            print("hi")
             cap.release()
+        if(command=="smoke"):
+            #bool, smokeLevel=smoke_level()
+            smokeLevel="130"
+            conn.send(str.encode(smokeLevel))
+
+
 
 
 

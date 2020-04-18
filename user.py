@@ -40,14 +40,22 @@ def cam(event):
         frame = cv2.imdecode(frame,cv2.IMREAD_COLOR)
         cv2.imshow('frame',frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            #s.send(str.encode('quit'))
+
             break
     cv2.destroyAllWindows()
+    s.send(str.encode('quit'))
+    print("hi")
 
 def temp(event):
     s.send(str.encode("temperature"))
     temperature=s.recv(1024)
     print(temperature.decode("utf-8"))
+
+
+def smokeLevel(event):
+    s.send(str.encode("smoke"))
+    smoke=s.recv(1024)
+    print(smoke.decode("utf-8"))
 
 
 def welcome(wc_msg,start):
@@ -71,14 +79,17 @@ def app(wc_msg):
     welcome(wc_msg,start)
     #panel1.place(x=0, y=0, relwidth=1, relheight=1)
     screen=Tk()
+    back = PhotoImage(file="background3.png")
     screen.geometry("300x500")
+    panel1 = Label(screen, image=back)
+    panel1.pack(side='top', fill='both', expand='yes')
     screen.configure(bg='#525252')
     style = ttk.Style()   
     style.configure('TButton', font =('Chilanka', 12, 'bold'), foreground = 'black', background='white', relief=FLAT ) 
 
         
-
-    camera=ttk.Button(screen, text="camera",style = 'TButton')
+    cam_im=PhotoImage(file="camera.png")
+    camera=ttk.Button(screen, text="camera",image= cam_im,style = 'TButton',)
     camera.bind("<Button-1>", cam)
     camera.place(relx=0.5, rely=0.2, anchor=CENTER)
 
@@ -93,7 +104,10 @@ def app(wc_msg):
     fans.place(relx=0.5, rely=0.65, anchor=CENTER)
 
     smoke=ttk.Button(screen, text="smoke", style = 'TButton')
+    smoke.bind(("<Button-1>", smokeLevel))
     smoke.place(relx=0.5, rely=0.8, anchor=CENTER)
+
+    panel1.image = back
 
     screen.mainloop()
 
