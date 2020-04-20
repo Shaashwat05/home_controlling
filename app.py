@@ -17,8 +17,6 @@ style.configure('TButton', font =('Chilanka', 12, 'bold'), foreground = 'black',
 camera=ttk.Button(screen, text="camera",style = 'TButton')
 #camera.bind("<Button-1>", cam)
 camera.place(relx=0.5, rely=0.2, anchor=CENTER)
-screen.grid_forget()
-
 
 temperature=ttk.Button(screen, text="temperature", style = 'TButton')
 #temperature.bind("<Button-1>", temp)

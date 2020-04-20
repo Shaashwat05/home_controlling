@@ -64,14 +64,30 @@ def send_command(conn):
                 data = dumps(frame,0)
                 size = len(data)
                 conn.send(struct.pack(">L",size)+data)
-                if((conn.recv(1024).decode("utf-8"))=="quit"):
-                    break
+                #if((conn.recv(1024).decode("utf-8"))=="quit"):
+                #    break
             print("hi")
             cap.release()
         if(command=="smoke"):
             #bool, smokeLevel=smoke_level()
             smokeLevel="130"
             conn.send(str.encode(smokeLevel))
+        if(command=="lights"):
+            '''chk=check_light():
+            if(chk =="ON"):
+                conn.send(str.encode("Lights are on,should I turn them off"))
+                ans=(conn.recv(1024)).decode("utf-8")
+                if(ans=="yes"):
+                    lights("off")
+            else:
+                conn.send(str.encode("Lights are off,should I turn them on"))
+                ans=(conn.recv(1024)).decode("utf-8")
+                if(ans=="yes"):
+                    lights("on")'''
+        
+        if(command=="fan"):
+            None
+
 
 
 
