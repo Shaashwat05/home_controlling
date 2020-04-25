@@ -33,6 +33,8 @@ def smoke_level():
 def check_light():
     if(GPIO.digitalRead(3)==GPIO.HIGH and GPIO.digitalRead(2)==GPIO.LOW):
         return "ON"
+    else:
+        return "OFF"
 
 
 def lights(action):
