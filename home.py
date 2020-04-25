@@ -57,16 +57,15 @@ def send_command(conn):
             encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
             i=1
             while True:
-                print("hi",i)
                 i+=1
                 ret,frame = cap.read()
                 res,frame = cv2.imencode('.jpg',frame,encode_param)
                 data = dumps(frame,0)
                 size = len(data)
                 conn.send(struct.pack(">L",size)+data)
-                #if((conn.recv(1024).decode("utf-8"))=="quit"):
-                #    break
-            print("hi")
+                op=(conn.recv(1024)).decode("utf-8")
+                if(op=="quit"):
+                    break
             cap.release()
         if(command=="smoke"):
             #bool, smokeLevel=smoke_level()

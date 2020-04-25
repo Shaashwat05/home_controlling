@@ -11,7 +11,7 @@ import struct
 
 
 s=socket.socket()
-host="192.168.1.176"
+host="192.168.1.197"
 port=9999
 
 s.connect((host,port))
@@ -40,10 +40,11 @@ def cam(event):
         frame = cv2.imdecode(frame,cv2.IMREAD_COLOR)
         cv2.imshow('frame',frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
-
+            s.send(str.encode('quit'))
             break
+        s.send(str.encode("0"))
     cv2.destroyAllWindows()
-    s.send(str.encode('quit'))
+    
     print("hi")
 
 def light(event):
@@ -103,7 +104,7 @@ def app(wc_msg):
     style.configure('TButton', font =('Chilanka', 12, 'bold'), foreground = 'black', background="#383838", relief=FLAT ) 
 
     cam_im=PhotoImage(file="camera.png")
-    camera=ttk.Button(screen, text="camera",image= cam_im,style = 'TButton',)
+    camera=ttk.Button(screen, text="camera",image= cam_im,style = 'TButton')
     camera.bind("<Button-1>", cam)
     camera.place(relx=0.5, rely=0.165, anchor=CENTER)
 
