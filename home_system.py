@@ -1,7 +1,7 @@
 import RPI.GPIO as GPIO
 import time
-from w1thermsensor import W1ThermSensor
-import time
+import glob
+import os
 import botbook_mcp3002 as mcp #
 
 GPIO.setmode(GPIO.BOARD)
@@ -10,9 +10,17 @@ GPIO.setup(3, GPIO.OUT)
 
 
 def check_temperature():
-    sensor = W1ThermSensor()
-    temperature = sensor.get_temperature()
-    return temperature
+    os.system('modprobe w1-gpio')
+    os.system('modprobe w1-therm')
+    
+    base_dir = '/sys/bus/w1/devices/'
+    device_folder = glob.glob(base_dir + '28*')[0]
+    device_file = device_folder + '/w1_slave'  
+    
+    f = open(device_file, 'r')
+    lines = f.readlines()
+    f.close()
+    return lines
 
 def smoke_level():
     smokeLevel= mcp.readAnalog()
