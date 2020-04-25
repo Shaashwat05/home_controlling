@@ -1,3 +1,4 @@
+from mq import *
 import RPI.GPIO as GPIO
 import time
 import glob
@@ -23,12 +24,10 @@ def check_temperature():
     return lines
 
 def smoke_level():
-    smokeLevel= mcp.readAnalog()
-    print ("Current smoke level is %i " % smokeLevel) #
-    if smokeLevel > 120:
-        return "smoke detected",smokeLevel
-    else:
-        return "your house is smoke free", smokeLevel
+    mq = MQ();
+    perc = mq.MQPercentage()
+    smk=[perc["GAS_LPG"], perc["CO"], perc["SMOKE"]]
+    return smk
 
 
 def check_light():
